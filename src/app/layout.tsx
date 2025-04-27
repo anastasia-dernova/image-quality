@@ -35,6 +35,43 @@
 
 
 // src/app/layout.tsx
+// import type { Metadata } from 'next';
+// import { Inter } from 'next/font/google';
+// import './globals.css';
+// import { EvaluationProvider } from '@/contexts/EvaluationContext';
+
+// const inter = Inter({ subsets: ['latin'] });
+
+// export const metadata: Metadata = {
+//   title: 'Image Quality Evaluator',
+//   description: 'An application for image quality specialists to evaluate image tuples',
+// };
+
+// export default function RootLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <html lang="en">
+//       <body className={inter.className}>
+//         <EvaluationProvider>
+//           <main className="min-h-screen bg-gray-50 p-4">
+//             <div className="max-w-7xl mx-auto">
+//               <header className="mb-8">
+//                 <h1 className="text-3xl font-bold text-gray-900">Image Quality Evaluator</h1>
+//               </header>
+//               {children}
+//             </div>
+//           </main>
+//         </EvaluationProvider>
+//       </body>
+//     </html>
+//   );
+// }
+
+//good working
+// src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -44,28 +81,24 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Image Quality Evaluator',
-  description: 'An application for image quality specialists to evaluate image tuples',
+  description: 'Compare and evaluate image quality across different processing methods',
 };
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en">
       <body className={inter.className}>
         <EvaluationProvider>
-          <main className="min-h-screen bg-gray-50 p-4">
-            <div className="max-w-7xl mx-auto">
-              <header className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Image Quality Evaluator</h1>
-              </header>
-              {children}
-            </div>
+          <main className="container mx-auto py-8 px-4">
+            {children}
           </main>
         </EvaluationProvider>
       </body>
     </html>
   );
 }
+
