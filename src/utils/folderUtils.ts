@@ -262,7 +262,7 @@ export const requestDirectoryAccess = async (): Promise<FolderStructure | null> 
   }
 
   try {
-    // @ts-expect-error 
+    // @ts-expect-error - showDirectoryPicker is not yet in TypeScript DOM typings
     const directoryHandle = await window.showDirectoryPicker({ mode: 'read' });
     log('Directory selected', { rootName: directoryHandle.name });
 
