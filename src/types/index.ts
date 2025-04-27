@@ -18,7 +18,7 @@ export interface ImageTuple {
   id: string;
   filename: string;
   paths: Record<string, string>;
-  directoryHandle?: any; // File system directory handle for accessing files
+  directoryHandle?: FileSystemDirectoryHandle;  // File system directory handle for accessing files
 }
 
 export interface EvaluationResult {
@@ -31,6 +31,3 @@ export interface EvaluationStats {
   evaluated: number;
   markDistribution: Record<string, number>;
 }
-
-// src/types/index.ts
-

@@ -245,7 +245,7 @@
 
 import { FolderStructure, ImageTuple } from '@/types';
 
-const log = (message: string, data?: any) => {
+const log = (message: string, data?: unknown) => {
   console.log(`[FSAccessAPI] ${message}`, data || '');
 };
 
@@ -262,7 +262,7 @@ export const requestDirectoryAccess = async (): Promise<FolderStructure | null> 
   }
 
   try {
-    // @ts-ignore
+    // @ts-expect-error 
     const directoryHandle = await window.showDirectoryPicker({ mode: 'read' });
     log('Directory selected', { rootName: directoryHandle.name });
 
@@ -272,7 +272,7 @@ export const requestDirectoryAccess = async (): Promise<FolderStructure | null> 
     for await (const [name, handle] of directoryHandle.entries()) {
       if (handle.kind === 'directory') {
         folderNames.push(name);
-        folderHandles[name] = handle;
+        folderHandles[name] = handle as FileSystemDirectoryHandle;;
       }
     }
 
@@ -282,7 +282,11 @@ export const requestDirectoryAccess = async (): Promise<FolderStructure | null> 
       optionalFolders: folderNames.reduce((acc, name) => {
         acc[name] = true;
         return acc;
-      }, {} as Record<string, boolean>)
+      }, {} as Record<string, boolean>),
+      necessaryFolders: {
+        originals: false,
+        target: false
+      }
     };
   } catch (error) {
     log('Directory access error', error);
@@ -333,7 +337,10 @@ export const createImageTuples = async (
   const folderFileSets = Object.values(filesByFolder);
   if (folderFileSets.length === 0) return [];
 
-  const commonFilenames = [...folderFileSets[0]].filter(filename =>
+  // const commonFilenames = [...folderFileSets[0]].filter(filename =>
+  //   folderFileSets.every(set => set.has(filename))
+  // );
+  const commonFilenames = Array.from(folderFileSets[0]).filter(filename =>
     folderFileSets.every(set => set.has(filename))
   );
 
@@ -348,7 +355,8 @@ export const createImageTuples = async (
     tuples.push({
       id: `tuple-${filename}`,
       filename,
-      paths
+      paths,
+      directoryHandle: rootDirectoryHandle
     });
   }
 

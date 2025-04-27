@@ -16,7 +16,7 @@ export default function FolderSelector() {
     startEvaluation
   } = useEvaluation();
   
-  const [rootDirHandle, setRootDirHandle] = useState<any>(null);
+  const [rootDirHandle, setRootDirHandle] = useState<FileSystemDirectoryHandle | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [commonImageCount, setCommonImageCount] = useState(0);
@@ -37,7 +37,9 @@ export default function FolderSelector() {
       }
       
       // Request directory access
-      const directoryHandle = await (window as any).showDirectoryPicker();
+      // const directoryHandle = await (window as any).showDirectoryPicker();
+      const directoryHandle = await (window as unknown as { showDirectoryPicker: () => Promise<FileSystemDirectoryHandle> }).showDirectoryPicker();
+
       setRootDirHandle(directoryHandle);
       
       // Scan for subdirectories
@@ -55,7 +57,8 @@ export default function FolderSelector() {
       for await (const [name, handle] of directoryHandle.entries()) {
         if (handle.kind === 'directory') {
           // Check if this folder contains images
-          const hasImages = await checkForImages(handle);
+          const dirHandle = handle as FileSystemDirectoryHandle;
+          const hasImages = await checkForImages(dirHandle);
           
           if (hasImages) {
             if (name === 'originals' || name === 'target') {
@@ -87,7 +90,7 @@ export default function FolderSelector() {
   };
   
   // Check if a directory contains images
-  const checkForImages = async (directoryHandle: any): Promise<boolean> => {
+  const checkForImages = async (directoryHandle: FileSystemDirectoryHandle): Promise<boolean> => {
     try {
       for await (const entry of directoryHandle.values()) {
         if (entry.kind === 'file') {
@@ -175,12 +178,10 @@ export default function FolderSelector() {
       setLoading(false);
     }
   };
-  
-  // Find common images across folders
-  // Find common images across folders
-  // Find common images across folders
+
   const findCommonImages = async (
-    directoryHandle: any, 
+    // directoryHandle: any,
+    directoryHandle: FileSystemDirectoryHandle,  
     folderNames: string[]
   ): Promise<string[]> => {
     if (folderNames.length < 2) return [];
@@ -234,7 +235,7 @@ export default function FolderSelector() {
     console.log("Creating image tuples from selected folders");
     
     // First find all common images
-    const commonFiles = await findCommonImages(rootDirHandle, folderStructure.selectedFolders);
+    const commonFiles = await findCommonImages(rootDirHandle!, folderStructure.selectedFolders);
     console.log(`Found ${commonFiles.length} common files across selected folders`);
     
     if (commonFiles.length === 0) {
@@ -260,14 +261,14 @@ export default function FolderSelector() {
         id: `tuple-${i}`,
         filename,
         paths,
-        directoryHandle: rootDirHandle // Store directory handle for file access
+        directoryHandle: rootDirHandle ?? undefined// Store directory handle for file access
       });
     }
     
     return tuples;
   };
   // Get all image files from a directory
-  const getImagesFromDirectory = async (directoryHandle: any): Promise<string[]> => {
+  const getImagesFromDirectory = async (directoryHandle: FileSystemDirectoryHandle): Promise<string[]> => {
     const imageFiles: string[] = [];
     
     try {
@@ -335,7 +336,7 @@ export default function FolderSelector() {
                 ))}
                 
                 {/* Optional folders */}
-                {Object.entries(folderStructure.optionalFolders).map(([name, exists]) => (
+                {Object.entries(folderStructure.optionalFolders).map(([name]) => (
                   <div key={name} className="flex items-center space-x-2">
                     <Checkbox 
                       id={`folder-${name}`} 
