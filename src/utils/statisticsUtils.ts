@@ -1,5 +1,5 @@
 // src/utils/statisticsUtils.ts
-import { EvaluationResult, Mark, EvaluationStats } from '@/types';
+import { Mark, EvaluationStats } from '@/types';
 
 // Function to generate chart data for recharts
 export const generateChartData = (stats: EvaluationStats, marks: Mark[]) => {

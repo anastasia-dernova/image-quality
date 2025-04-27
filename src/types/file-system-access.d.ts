@@ -39,11 +39,6 @@
 //     }): Promise<FileSystemFileHandle>;
 //   }
 
-// src/types/file-system-access.d.ts
-// Type definitions for File System Access API
-
-// src/types/file-system-access.d.ts
-// Type definitions for File System Access API
 
 interface FileSystemHandle {
   readonly kind: 'file' | 'directory';
