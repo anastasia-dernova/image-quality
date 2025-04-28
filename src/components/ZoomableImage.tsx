@@ -312,6 +312,9 @@
 // }
 
 
+// 
+
+
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 
@@ -322,7 +325,7 @@ interface ZoomableImageProps {
   zoomPosition: { x: number, y: number } | null;
   setZoomPosition: (position: { x: number, y: number } | null) => void;
   isZoomEnabled: boolean;
-  onImageClick: (imageData: { src: string, alt: string, folder: string }) => void;
+  onImageClick?: (imageData: { src: string, alt: string, folder: string }) => void;
   folder: string;
   error?: boolean;
   loading?: boolean;
@@ -335,48 +338,32 @@ export default function ZoomableImage({
   zoomPosition = null,
   setZoomPosition = () => {},
   isZoomEnabled = false,
-  onImageClick = () => {},
+  onImageClick,
   folder,
   error = false,
   loading = false,
 }: ZoomableImageProps) {
   const imageContainerRef = useRef<HTMLDivElement>(null);
-  const [_dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [_naturalDimensions, setNaturalDimensions] = useState({ width: 0, height: 0 });
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [naturalDimensions, setNaturalDimensions] = useState({ width: 0, height: 0 });
   const [imageLoaded, setImageLoaded] = useState(false);
 
   // Handle image load to get dimensions
-//   const handleImageLoad = (e: any) => {
-//     if (imageContainerRef.current) {
-//       // Get container dimensions
-//       const { width, height } = imageContainerRef.current.getBoundingClientRect();
-//       setDimensions({ width, height });
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (imageContainerRef.current) {
+      // Get container dimensions
+      const { width, height } = imageContainerRef.current.getBoundingClientRect();
+      setDimensions({ width, height });
       
-//       // Try to get natural dimensions
-//       const img = e.target;
-//       if (img.naturalWidth && img.naturalHeight) {
-//         setNaturalDimensions({ width: img.naturalWidth, height: img.naturalHeight });
-//       }
+      // Try to get natural dimensions
+      const img = e.target as HTMLImageElement;
+      if (img.naturalWidth && img.naturalHeight) {
+        setNaturalDimensions({ width: img.naturalWidth, height: img.naturalHeight });
+      }
       
-//       setImageLoaded(true);
-//     }
-//   };
-    const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-        if (imageContainerRef.current) {
-        // Get container dimensions
-        const { width, height } = imageContainerRef.current.getBoundingClientRect();
-        setDimensions({ width, height });
-        
-        // Try to get natural dimensions
-        const img = e.target as HTMLImageElement;
-        if (img.naturalWidth && img.naturalHeight) {
-            setNaturalDimensions({ width: img.naturalWidth, height: img.naturalHeight });
-        }
-        
-        setImageLoaded(true);
-        }
-    };
-  
+      setImageLoaded(true);
+    }
+  };
 
   // Update dimensions if container size changes
   useEffect(() => {
@@ -406,7 +393,7 @@ export default function ZoomableImage({
 
   // Handle image click
   const handleImageClick = () => {
-    onImageClick({ src, alt, folder });
+    onImageClick?.({ src, alt, folder });
   };
 
   // Calculate zoom styles
