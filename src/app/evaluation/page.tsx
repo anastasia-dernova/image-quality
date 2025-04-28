@@ -256,6 +256,7 @@ import { calculatePercentage } from '@/utils/statisticsUtils';
 import ZoomableImage from '@/components/ZoomableImage';
 // import FullScreenImageModal from '@/components/FullScreenImageModal';
 import { Maximize2, ZoomIn } from 'lucide-react';
+import { image } from '@tensorflow/tfjs-core';
 
 export default function EvaluationPage() {
   const { 
@@ -285,8 +286,8 @@ export default function EvaluationPage() {
   const [isZoomEnabled, setIsZoomEnabled] = useState(false);
   
   // State for full-screen modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [fullscreenImages, setFullscreenImages] = useState<{src: string, alt: string, folder: string}[]>([]);
+  const [_isModalOpen, setIsModalOpen] = useState(false);
+  const [_fullscreenImages, setFullscreenImages] = useState<{src: string, alt: string, folder: string}[]>([]);
   
   // Helper function to reset images when changing tuples
   const resetImages = () => {
@@ -400,7 +401,7 @@ export default function EvaluationPage() {
   };
   
   // Handle image click to open in full screen
-  const handleImageClick = (imageData: { src: string, alt: string, folder: string }) => {
+  const handleImageClick = () => {
     const allImages = folderImages
       .filter(item => !item.loading && !item.error)
       .map(item => ({
