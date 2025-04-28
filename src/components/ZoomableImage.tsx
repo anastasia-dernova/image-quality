@@ -344,8 +344,8 @@ export default function ZoomableImage({
   loading = false,
 }: ZoomableImageProps) {
   const imageContainerRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [naturalDimensions, setNaturalDimensions] = useState({ width: 0, height: 0 });
+  const [_dimensions, _setDimensions] = useState({ width: 0, height: 0 });
+  const [_naturalDimensions, _setNaturalDimensions] = useState({ width: 0, height: 0 });
   const [imageLoaded, setImageLoaded] = useState(false);
 
   // Handle image load to get dimensions
@@ -353,12 +353,12 @@ export default function ZoomableImage({
     if (imageContainerRef.current) {
       // Get container dimensions
       const { width, height } = imageContainerRef.current.getBoundingClientRect();
-      setDimensions({ width, height });
+      _setDimensions({ width, height });
       
       // Try to get natural dimensions
       const img = e.target as HTMLImageElement;
       if (img.naturalWidth && img.naturalHeight) {
-        setNaturalDimensions({ width: img.naturalWidth, height: img.naturalHeight });
+        _setNaturalDimensions({ width: img.naturalWidth, height: img.naturalHeight });
       }
       
       setImageLoaded(true);
@@ -370,7 +370,7 @@ export default function ZoomableImage({
     const updateDimensions = () => {
       if (imageContainerRef.current) {
         const { width, height } = imageContainerRef.current.getBoundingClientRect();
-        setDimensions({ width, height });
+        _setDimensions({ width, height });
       }
     };
 
